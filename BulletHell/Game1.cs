@@ -1,5 +1,6 @@
 ﻿using BulletHell.Engine;
 using BulletHell.Engine.BulletFactory;
+using BulletHell.Engine.MovementPatterns;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -63,9 +64,11 @@ namespace BulletHell
             bulletList = new List<BulletEntity>();
             bulletFactory = new BulletFactory(bulletSprite, bulletList);
             player = new PlayerEntity(playerSprite, 50, 50, 1);
-
+            
             player.bulletCreated += bulletFactory.OnBulletCreated;
-            enemy = new EnemyEntity(enemySprite, 25, 50, 1);
+            double enemyX = 200;
+            double enemyY = 100;
+            enemy = new EnemyEntity(enemySprite, 200, 100, 1, new CircleMovementPattern(enemyX, enemyY));
         }
 
         /// <summary>
@@ -76,8 +79,8 @@ namespace BulletHell
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            playerSprite = Content.Load<Texture2D>(@"2D_Assets\playerSprite");
-            enemySprite = Content.Load<Texture2D>(@"2D_Assets\enemySprite");
+            playerSprite = Content.Load<Texture2D>(@"2D_Assets\eggplant");
+            enemySprite = Content.Load<Texture2D>(@"2D_Assets\peach");
             backgroundSprite = Content.Load<Texture2D>(@"2D_Assets\synthwaveLevel");
             bulletSprite = Content.Load<Texture2D>(@"2D_Assets\bullet");
             gameFont = Content.Load<SpriteFont>(@"Fonts\galleryFont");
@@ -103,27 +106,8 @@ namespace BulletHell
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            //mouseState = Mouse.GetState();
-
-            //if(mouseState.LeftButton == ButtonState.Pressed && isReleased)
-            //{
-            //    score++;
-            //    isReleased = false;
-            //}
-
-            //if(mouseState.LeftButton == ButtonState.Released)
-            //{
-            //    isReleased = true;
-            //}
-
-            //state = Keyboard.GetState();
-
-            //// If they hit esc, exit
-            //if (state.IsKeyDown(Keys.Escape))
-            //{
-            //    Exit();
-            //}
-
+          //  bulletFactory.RecycleBullets(); // Culls all of the bullets that are no longer on the screen
+            
             // Print to debug console currently pressed keys
             System.Text.StringBuilder sb = new StringBuilder();
             foreach (var key in state.GetPressedKeys())
@@ -134,22 +118,24 @@ namespace BulletHell
             else
                 System.Diagnostics.Debug.WriteLine("No Keys pressed");
 
-            //// Move our sprite based on arrow keys being pressed:
-            //if (state.IsKeyDown(Keys.D))
-            //    player.X += 10;
-            //if (state.IsKeyDown(Keys.A))
-            //    player.X -= 10;
-            //if (state.IsKeyDown(Keys.W))
-            //    player.Y -= 10;
-            //if (state.IsKeyDown(Keys.S))
-            //    player.Y += 10;
             foreach (var bullet in bulletList)
             {
                 bullet.Update(gameTime);
             }
+
+
             player.Update(gameTime);
+
             // TODO: Add your update logic here
             enemy.Update(gameTime);
+
+            foreach (var bullet in bulletList)
+            {
+                if (enemy.Intersects(bullet.Hitbox))
+                {
+                    System.Console.WriteLine("ENEMY WAS HITTTTTTTT!!!!!!!!!!!!!!!!!");
+                }
+            }
 
             base.Update(gameTime);
         }

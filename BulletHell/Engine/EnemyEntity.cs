@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using BulletHell.Engine.MovementPatterns;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
@@ -6,34 +7,21 @@ namespace BulletHell.Engine
 {
     class EnemyEntity : BaseEntity
     {
-        public EnemyEntity(Texture2D entitySprite, double x, double y, double movementSpeed) : base(entitySprite, x, y, movementSpeed)
-        {
+        AbstractMovementPattern movementPattern;
 
+        public EnemyEntity(Texture2D entitySprite, double x, double y, double movementSpeed, CircleMovementPattern movementPattern) : base(entitySprite, x, y, movementSpeed)
+        {
+            this.movementPattern = movementPattern;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(entitySprite, new Rectangle((int)this.X, (int)this.Y, 200, 200), Color.White);
+            spriteBatch.Draw(entitySprite, new Rectangle((int)this.X, (int)this.Y, 100, 100), Color.White);
         }
 
         public override void Update(GameTime gameTime)
         {
-            Random rnd = new Random();
-            double x_speed = movementSpeed;
-            double y_speed = movementSpeed + 1;
-            if (x > 700)
-            {
-                movementSpeed = -1 * (double)rnd.Next(2, 2);
-            }
-            if (x < 0)
-            {
-                movementSpeed = (double)rnd.Next(2, 2);
-            }
-
-            float timeDelta = gameTime.ElapsedGameTime.Milliseconds;
-            this.x += movementSpeed * timeDelta * 0.2;
-           // this.y += movementSpeed * timeDelta * 0.1;
-
+            movementPattern.Move( ref this.x, ref this.y, gameTime, ref movementSpeed);
         }
     }
 }

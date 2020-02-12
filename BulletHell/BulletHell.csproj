@@ -45,7 +45,11 @@
     <Compile Include="Engine\BulletFactory\BulletEntity.cs" />
     <Compile Include="Engine\BulletFactory\BulletFactory.cs" />
     <Compile Include="Engine\EnemyEntity.cs" />
+    <Compile Include="Engine\MovementPatterns\AbstractMovementPattern.cs" />
+    <Compile Include="Engine\MovementPatterns\CircleMovementPattern.cs" />
+    <Compile Include="Engine\MovementPatterns\EnemyMovementPattern.cs" />
     <Compile Include="Engine\Player.cs" />
+    <Compile Include="Engine\Utils\Circle.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -76,7 +80,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Content\2D_Assets\bullet.xnb" />
+    <None Include="Content\2D_Assets\eggplant.xnb" />
     <None Include="Content\2D_Assets\enemySprite.xnb" />
+    <None Include="Content\2D_Assets\peach.xnb" />
     <None Include="Content\2D_Assets\playerSprite.xnb" />
     <None Include="Content\2D_Assets\synthwaveLevel.xnb" />
   </ItemGroup>

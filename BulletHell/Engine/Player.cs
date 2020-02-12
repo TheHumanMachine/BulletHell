@@ -13,10 +13,12 @@ namespace BulletHell.Engine
     {
 
         // Control Variables (Mouse, Keyboard, etc)
-        MouseState mouseState;
-        bool isReleased = true;
+        private MouseState mouseState;
+        private bool isReleased = true;
 
-        KeyboardState state;
+        private KeyboardState state;
+        private int height = 100;
+        private int width = 100; // We are assuming the sprite will always be a square 
 
         public delegate void CreateBulletEventHandler(double x, double y);
         public event CreateBulletEventHandler bulletCreated;
@@ -28,12 +30,13 @@ namespace BulletHell.Engine
         
         protected virtual void OnBulletCreated()
         {
-            bulletCreated(this.X, this.Y);
+            // the width is divided by 2 so that the bullets appear in the middle of the sprite
+            bulletCreated(this.X + width / 2, this.Y);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(entitySprite, new Rectangle((int)this.X, (int)this.Y, 100, 100), Color.White);
+            spriteBatch.Draw(entitySprite, new Rectangle((int)this.X, (int)this.Y, width, height), Color.White);
         }
 
         public override void Update(GameTime gameTime)
