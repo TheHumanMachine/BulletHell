@@ -1,12 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace BulletHell.Engine
 {
     public class PlayerEntity : BaseEntity
@@ -17,26 +11,25 @@ namespace BulletHell.Engine
         private bool isReleased = true;
 
         private KeyboardState state;
-        private int height = 100;
-        private int width = 75; // We are assuming the sprite will always be a square 
+        private Vector2 defaultScale;
 
-        public delegate void CreateBulletEventHandler(double x, double y);
+        public delegate void CreateBulletEventHandler(float x, float y);
         public event CreateBulletEventHandler bulletCreated;
 
-        public PlayerEntity(Texture2D entitySprite, double x, double y, double movementSpeed) : base(entitySprite, x, y, movementSpeed)
+        public PlayerEntity(Texture2D entitySprite, Vector2 position, double movementSpeed, float scalar) : base(entitySprite, position, movementSpeed, scalar)
         {
-
         }
         
         protected virtual void OnBulletCreated()
         {
             // the width is divided by 2 so that the bullets appear in the middle of the sprite
-            bulletCreated(this.X + width / 2, this.Y);
+            float nX = this.X;
+            bulletCreated(nX, this.Y);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(entitySprite, new Rectangle((int)this.X, (int)this.Y, width, height), Color.White);
+            this.sprite.Draw(spriteBatch);
         }
 
         public override void Update(GameTime gameTime)

@@ -18,10 +18,10 @@ namespace BulletHell.Engine.MovementPatterns.Bullet
 
         }
 
-        public override void Move(ref double x, ref double y, GameTime gameTime, ref double movementSpeed)
+        public override void Move(ref float x, ref float y, GameTime gameTime, ref double movementSpeed)
         {
-            x = x + Math.Cos(angle) * radius;
-            y = y + Math.Sin(angle) * radius;
+            x = (float)(x+ Math.Cos(angle) * radius);
+            y = (float)(y + Math.Sin(angle) * radius);
 
             double angleInRad = Math.PI * angle / 180.0;
 

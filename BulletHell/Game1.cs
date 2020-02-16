@@ -1,6 +1,7 @@
 ﻿using BulletHell.Engine;
 using BulletHell.Engine.BulletFactory;
 using BulletHell.Engine.MovementPatterns;
+using BulletHell.Engine.MovementPatterns.Bullet;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -41,6 +42,7 @@ namespace BulletHell
 
         // Game Variables
         BulletFactory bulletFactory;
+        PlayerBulletFactory playerBulletFactory;
         List<BulletEntity> bulletList;
        // Vector2 targetPosition;
         int score = 0;
@@ -49,7 +51,7 @@ namespace BulletHell
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            graphics.IsFullScreen = true;
+           // graphics.IsFullScreen = true;
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
         }
 
@@ -63,16 +65,20 @@ namespace BulletHell
         {
             // TODO: Add your initialization logic here
             base.Initialize();
+
             bulletList = new List<BulletEntity>();
             bulletFactory = new BulletFactory(bulletSprite, bulletList);
-            player = new PlayerEntity(playerSprite, 50, 50, 1);
-            
-            player.bulletCreated += bulletFactory.OnBulletCreated;
+            playerBulletFactory = new PlayerBulletFactory(bulletSprite, bulletList, new PlayerBulletMovementPattern());
+
+
+            player = new PlayerEntity(playerSprite, new Vector2(50f,50f), 1, 0.25f);
+            player.bulletCreated += playerBulletFactory.OnBulletCreated;
             
             double enemyX = 200;
             double enemyY = 100;
             AbstractMovementPattern[] enemyMovements = { new CircleMovementPattern(enemyX, enemyY), new StraightMovementPattern()};
-            enemy = new EnemyEntity(enemySprite, 200, 100, 1, enemyMovements);
+
+            enemy = new EnemyEntity(enemySprite, new Vector2(200, 100), 1, enemyMovements, 0.25f);
             enemy.bulletCreated += bulletFactory.OnBulletCreated;
         }
 
@@ -134,13 +140,13 @@ namespace BulletHell
             // TODO: Add your update logic here
             enemy.Update(gameTime);
 
-            foreach (var bullet in bulletList)
-            {
-                if (enemy.Intersects(bullet.Hitbox))
-                {
-                    System.Console.WriteLine("ENEMY WAS HITTTTTTTT!!!!!!!!!!!!!!!!!");
-                }
-            }
+            //foreach (var bullet in bulletList)
+            //{
+            //    if (enemy.Intersects(bullet.Hitbox))
+            //    {
+            //        System.Console.WriteLine("ENEMY WAS HITTTTTTTT!!!!!!!!!!!!!!!!!");
+            //    }
+            //}
 
             base.Update(gameTime);
         }

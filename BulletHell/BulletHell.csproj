@@ -41,16 +41,19 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Engine\BulletFactory\PlayerBulletFactory.cs" />
     <Compile Include="Engine\Entities\BaseEntity.cs" />
     <Compile Include="Engine\Bullets\BulletEntity.cs" />
     <Compile Include="Engine\BulletFactory\BulletFactory.cs" />
     <Compile Include="Engine\Entities\Enemies\EnemyEntity.cs" />
     <Compile Include="Engine\MovementPatterns\AbstractMovementPattern.cs" />
+    <Compile Include="Engine\MovementPatterns\Bullet\PlayerBulletMovementPattern.cs" />
     <Compile Include="Engine\MovementPatterns\Bullet\SpiralBulletMovementPattern.cs" />
     <Compile Include="Engine\MovementPatterns\Enemy\CircleMovementPattern.cs" />
     <Compile Include="Engine\MovementPatterns\Enemy\StraightMovementPattern.cs" />
     <Compile Include="Engine\Entities\Player.cs" />
     <Compile Include="Engine\Utils\Circle.cs" />
+    <Compile Include="Engine\Utils\Sprite.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

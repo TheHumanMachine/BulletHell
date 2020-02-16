@@ -6,50 +6,50 @@ namespace BulletHell.Engine
 {
     public abstract class BaseEntity
     {
-        protected Texture2D entitySprite;
-        private Circle hitbox;
+        //private Circle hitbox;
+        protected Sprite sprite;
         protected double movementSpeed;
-        protected double x;
-        protected double y;
+        protected Vector2 position;
 
-        protected BaseEntity(Texture2D entitySprite, double x, double y, double movementSpeed)
+        protected BaseEntity(Texture2D entitySprite, Vector2 position, double movementSpeed, float scalar)
         {
-            this.entitySprite = entitySprite;
-            this.x = x;
-            this.y = y;
-            this.hitbox = new Circle((float)x, (float)y, 10);
+            this.position = position;
+            sprite = new Sprite(entitySprite, position, Color.White, scalar);
+            //this.hitbox = new Circle((float)x, (float)y, 10);
             this.movementSpeed = movementSpeed;
         }
 
-       public virtual double X
+       public virtual float X
         {
-            get { return x; }
+            get { return position.X; }
             set
             {
-                this.x = value;
-                hitbox.X = (float)x + (this.entitySprite.Width / 2);
+                this.position.X = value;
+                this.sprite.UpdatePosition(position);
+                //hitbox.X = position.X + (this.sprite.SpriteTexture.Width / 2);
             }
         }
 
-        public virtual double Y
+        public virtual float Y
         {
-            get { return y; }
+            get { return position.Y; }
             set
             {
-                this.y = value;
-                hitbox.Y = (float)y -( this.entitySprite.Height / 2);
+                position.Y = value;
+                this.sprite.UpdatePosition(position);
+                //hitbox.Y = position.Y - (this.sprite.SpriteTexture.Height / 2);
             }
         }
 
-        public Circle Hitbox
-        {
-            get { return hitbox; }
-        }
+        //public Circle Hitbox
+        //{
+        //    get { return hitbox; }
+        //}
 
-        public bool Intersects(Circle otherCircle)
-        {
-            return hitbox.Intersects(otherCircle);
-        }
+        //public bool Intersects(Circle otherCircle)
+        //{
+        //    return hitbox.Intersects(otherCircle);
+        //}
 
         public abstract void Draw(SpriteBatch spriteBatch);
 

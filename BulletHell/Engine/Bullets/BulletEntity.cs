@@ -15,14 +15,9 @@ namespace BulletHell.Engine
         private bool alive = true;
         AbstractMovementPattern movementPattern;
 
-        public BulletEntity(Texture2D entitySprite, double x, double y, double movementSpeed, AbstractMovementPattern movementPattern) : base(entitySprite, x, y, movementSpeed)
+        public BulletEntity(Texture2D entitySprite, Vector2 position, double movementSpeed, AbstractMovementPattern movementPattern, float scalar = 0.1f) : base(entitySprite, position, movementSpeed, scalar)
         {
             this.movementPattern = movementPattern;
-        }
-
-        public BulletEntity(Texture2D entitySprite, double x, double y, double movementSpeed) : base(entitySprite, x, y, movementSpeed)
-        {
-            this.movementPattern = new SpiralBulletMovementPattern();
         }
 
         public bool IsAlive
@@ -31,21 +26,12 @@ namespace BulletHell.Engine
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(entitySprite, new Rectangle((int)this.X, (int)this.Y, 50, 50), Color.White);
+            this.sprite.Draw(spriteBatch);
         }
 
         public override void Update(GameTime gameTime)
         {
-            //if (x > 0 && x < 500 && y > 0 && y < 500)
-            //{
-            //    this.Y -= movementSpeed;
-            //}
-            //else
-            //{
-            //    alive = false; // Kill the bullet aka it should be removed from the game
-            //}
-            movementPattern.Move(ref x, ref y, gameTime, ref movementSpeed);
-
+            movementPattern.Move(this.X, this.Y, gameTime, ref movementSpeed);
         }
     }
 }

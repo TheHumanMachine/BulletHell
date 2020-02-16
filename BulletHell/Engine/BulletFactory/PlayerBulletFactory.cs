@@ -1,5 +1,4 @@
 ﻿using BulletHell.Engine.MovementPatterns;
-using BulletHell.Engine.MovementPatterns.Bullet;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BulletHell.Engine.BulletFactory
 {
-    public class BulletFactory
+    public class PlayerBulletFactory
     {
         private Texture2D bulletSprite;
         private List<BulletEntity> bulletList;
@@ -18,29 +17,29 @@ namespace BulletHell.Engine.BulletFactory
         private BulletEntity cahedBullet;
         private List<BulletEntity> recycleBin;
         private AbstractMovementPattern defaultMovementPattern;
+        private double defaultMovementSpeed = 4;
 
         private int cacheLimit = 100;
 
-        public BulletFactory(Texture2D bulletSprite, List<BulletEntity> bulletList)
+        public PlayerBulletFactory(Texture2D bulletSprite, List<BulletEntity> bulletList, AbstractMovementPattern defaultMovementPattern)
         {
+            this.defaultMovementPattern = defaultMovementPattern;
             this.bulletSprite = bulletSprite;
             this.bulletList = bulletList;
             this.bulletCache = new Queue<BulletEntity>();
             this.recycleBin = new List<BulletEntity>();
-            defaultMovementPattern = new SpiralBulletMovementPattern();
-
-            for (int i =0; i < cacheLimit; i++)
+            for (int i = 0; i < cacheLimit; i++)
             {
-                bulletCache.Enqueue(new BulletEntity(bulletSprite, new Vector2(0, 0), 1, defaultMovementPattern));
+                bulletCache.Enqueue(new BulletEntity(bulletSprite, new Vector2(0,0), defaultMovementSpeed, defaultMovementPattern));
             }
-        } 
-        
+        }
+
         public void RecycleBullets()
         {
             // Add the bullet back to the cache
             foreach (var bullet in bulletList)
             {
-                if ( !bullet.IsAlive )
+                if (!bullet.IsAlive)
                 {
                     // The bullet is no longer visible to the player and should be recycled 
                     recycleBin.Add(bullet);
@@ -49,13 +48,13 @@ namespace BulletHell.Engine.BulletFactory
             bulletList = bulletList.Except(recycleBin).ToList();
 
             recycleBin.ForEach(o => bulletCache.Enqueue(o));
-           
+
             recycleBin.Clear();
         }
 
         public void OnBulletCreated(float x, float y)
         {
-            if(bulletCache.Count > 0)
+            if (bulletCache.Count > 0)
             {
                 cahedBullet = bulletCache.Dequeue();
                 cahedBullet.X = x;
@@ -64,7 +63,7 @@ namespace BulletHell.Engine.BulletFactory
             }
             else
             {
-                bulletList.Add(new BulletEntity(bulletSprite, new Vector2(x, y), 1, defaultMovementPattern));
+                bulletList.Add(new BulletEntity(bulletSprite, new Vector2(x, y), defaultMovementSpeed, defaultMovementPattern));
             }
         }
     }
