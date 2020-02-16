@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework;
 
 namespace BulletHell.Engine.MovementPatterns
 {
-    class EnemyMovementPattern : AbstractMovementPattern
+    class StraightMovementPattern : AbstractMovementPattern
     {
-        public EnemyMovementPattern()
+        public StraightMovementPattern()
         {
 
         }

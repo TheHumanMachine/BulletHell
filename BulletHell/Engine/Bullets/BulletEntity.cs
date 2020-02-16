@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BulletHell.Engine.MovementPatterns;
+using BulletHell.Engine.MovementPatterns.Bullet;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -21,7 +22,7 @@ namespace BulletHell.Engine
 
         public BulletEntity(Texture2D entitySprite, double x, double y, double movementSpeed) : base(entitySprite, x, y, movementSpeed)
         {
-            this.movementPattern = new CircleMovementPattern(x, y);
+            this.movementPattern = new SpiralBulletMovementPattern();
         }
 
         public bool IsAlive
@@ -30,7 +31,7 @@ namespace BulletHell.Engine
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(entitySprite, new Rectangle((int)this.X, (int)this.Y, 20, 20), Color.White);
+            spriteBatch.Draw(entitySprite, new Rectangle((int)this.X, (int)this.Y, 50, 50), Color.White);
         }
 
         public override void Update(GameTime gameTime)

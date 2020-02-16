@@ -49,6 +49,8 @@ namespace BulletHell
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.IsFullScreen = true;
+            graphics.GraphicsProfile = GraphicsProfile.HiDef;
         }
 
         /// <summary>
@@ -66,9 +68,12 @@ namespace BulletHell
             player = new PlayerEntity(playerSprite, 50, 50, 1);
             
             player.bulletCreated += bulletFactory.OnBulletCreated;
+            
             double enemyX = 200;
             double enemyY = 100;
-            enemy = new EnemyEntity(enemySprite, 200, 100, 1, new CircleMovementPattern(enemyX, enemyY));
+            AbstractMovementPattern[] enemyMovements = { new CircleMovementPattern(enemyX, enemyY), new StraightMovementPattern()};
+            enemy = new EnemyEntity(enemySprite, 200, 100, 1, enemyMovements);
+            enemy.bulletCreated += bulletFactory.OnBulletCreated;
         }
 
         /// <summary>
@@ -79,10 +84,10 @@ namespace BulletHell
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            playerSprite = Content.Load<Texture2D>(@"2D_Assets\eggplant");
+            playerSprite = Content.Load<Texture2D>(@"2D_Assets\playerSprite");
             enemySprite = Content.Load<Texture2D>(@"2D_Assets\peach");
             backgroundSprite = Content.Load<Texture2D>(@"2D_Assets\synthwaveLevel");
-            bulletSprite = Content.Load<Texture2D>(@"2D_Assets\bullet");
+            bulletSprite = Content.Load<Texture2D>(@"2D_Assets\fireball");
             gameFont = Content.Load<SpriteFont>(@"Fonts\galleryFont");
             // TODO: use this.Content to load your game content here
         }
@@ -146,13 +151,13 @@ namespace BulletHell
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.White);
 
             // TODO: Add your drawing code here
             
             spriteBatch.Begin();
 
-            spriteBatch.Draw(backgroundSprite, new Rectangle(0, 0, 500, 500), Color.Transparent);
+            spriteBatch.Draw(backgroundSprite, new Rectangle(0, 0, 700, 700), Color.White);
 
             foreach (var bullet in bulletList)
             {

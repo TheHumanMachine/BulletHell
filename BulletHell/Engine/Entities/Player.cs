@@ -18,7 +18,7 @@ namespace BulletHell.Engine
 
         private KeyboardState state;
         private int height = 100;
-        private int width = 100; // We are assuming the sprite will always be a square 
+        private int width = 75; // We are assuming the sprite will always be a square 
 
         public delegate void CreateBulletEventHandler(double x, double y);
         public event CreateBulletEventHandler bulletCreated;
