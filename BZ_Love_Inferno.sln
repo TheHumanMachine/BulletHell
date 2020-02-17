@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.960
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulletHell", "BulletHell\BulletHell.csproj", "{F7825890-F4D4-46E3-ADAA-F0388AA3D27E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BZ_Love_Inferno", "BulletHell\BZ_Love_Inferno.csproj", "{F7825890-F4D4-46E3-ADAA-F0388AA3D27E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
