@@ -8,7 +8,7 @@ namespace BulletHell.Engine.MovementPatterns
         {
         }
 
-        public abstract void Move(ref double x, ref double y, GameTime gameTime, ref double movementSpeed);
+        public abstract void Move(ref float x, ref float y, GameTime gameTime, ref double movementSpeed);
 
     }
 }

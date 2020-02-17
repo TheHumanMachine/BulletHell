@@ -1,4 +1,5 @@
 ﻿using BulletHell.Engine.MovementPatterns;
+using BulletHell.Engine.MovementPatterns.Enemy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -7,55 +8,102 @@ namespace BulletHell.Engine
 {
     class EnemyEntity : BaseEntity
     {
-        public delegate void CreateBulletEventHandler(double x, double y);
+        public delegate void CreateBulletEventHandler(float x, float y);
         public event CreateBulletEventHandler bulletCreated;
 
         AbstractMovementPattern[] movementPatterns;
-        int counter = 0;
+        AbstractMovementPattern exitMovementPattern;
+        int counter;
         bool isCircling = true;
+        private double timeOnScreen = 20; // the mid boss will be on screen for 20 seconds
+        private int startingTime;
+        private bool hasTimeStarted = false;
+        private bool isActive = false;
 
-        public EnemyEntity(Texture2D entitySprite, double x, double y, double movementSpeed, AbstractMovementPattern[] movementPatterns) : base(entitySprite, x, y, movementSpeed)
+        public EnemyEntity(Texture2D entitySprite, float x, float y, double movementSpeed, AbstractMovementPattern[] movementPatterns, float scalar) : base(entitySprite, x, y, movementSpeed, scalar)
         {
+            Random rand = new Random();
             this.movementPatterns = movementPatterns;
+            this.exitMovementPattern = new ExitScreenMovementPattern();
+            counter = rand.Next(0, 500);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(entitySprite, new Rectangle((int)this.X, (int)this.Y, 75, 100), Color.White);
+            if (isActive)
+            {
+                this.sprite.Draw(spriteBatch);
+            }
         }
 
         protected virtual void OnBulletCreated()
         {
             // the width is divided by 2 so that the bullets appear in the middle of the sprite
-            bulletCreated(this.X + this.entitySprite.Width / 2, this.Y);
+            bulletCreated(this.X + ((this.sprite.SpriteTexture.Width * 0.15f) / 2), this.Y);
         }
 
         public override void Update(GameTime gameTime)
         {
-            if(isCircling)
+            // If this is the first time it's updating we want to preserve the time for future reference
+            if (!hasTimeStarted)
             {
-                movementPatterns[0].Move( ref this.x, ref this.y, gameTime, ref movementSpeed);
-                counter++;
-                if(counter > 200)
+                startingTime = gameTime.TotalGameTime.Seconds;
+                hasTimeStarted = true;
+                isActive = true;
+            }
+
+            // Get the current time so we can compare it to when the mid boss first shows up
+            int currentTimeInSeconds = gameTime.TotalGameTime.Seconds;
+
+            // We assume currentTimeIn Seconds wil always be bigger then startingTime
+            if ((currentTimeInSeconds - startingTime) <= timeOnScreen)
+            {
+                // Mid boss is still active
+                float tempX = this.X;
+                float tempY = this.Y;
+                if (isCircling)
                 {
-                    isCircling = false;
-                    counter = 0;
+                    movementPatterns[0].Move(ref tempX, ref tempY, gameTime, ref movementSpeed);
+                    counter++;
+                    if (counter > 200)
+                    {
+                        isCircling = false;
+                        counter = 0;
+                    }
+                }
+                else
+                {
+                    movementPatterns[1].Move(ref tempX, ref tempY, gameTime, ref movementSpeed);
+                    counter++;
+                    if (counter > 200)
+                    {
+                        isCircling = true;
+                        counter = 0;
+                    }
+                }
+
+                this.X = tempX;
+                this.Y = tempY;
+
+                if (counter % 25 == 0)
+                {
+                    OnBulletCreated();
                 }
             }
             else
             {
-                movementPatterns[1].Move(ref this.x, ref this.y, gameTime, ref movementSpeed);
-                counter++;
-                if (counter > 200)
-                {
-                    isCircling = true;
-                    counter = 0;
-                }
-            }
+                // enemy should exit
+                if (movementSpeed < 0) { movementSpeed *= -1; }
+                float tempX = this.X;
+                float tempY = this.Y;
+                exitMovementPattern.Move(ref tempX, ref tempY, gameTime, ref movementSpeed);
+                this.X = tempX;
+                this.Y = tempY;
 
-            if(counter == 50 || counter == 100 || counter == 150)
-            {
-                OnBulletCreated();
+                if (this.Y <= 0)
+                {
+                    isActive = false;
+                }
             }
         }
     }

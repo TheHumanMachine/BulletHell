@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
 namespace BulletHell.Engine.MovementPatterns.Bullet
@@ -10,24 +6,22 @@ namespace BulletHell.Engine.MovementPatterns.Bullet
     public class SpiralBulletMovementPattern : AbstractMovementPattern
     {
         private double radius = 10;
-        private double radialIncrease = 0.005;
-        private double angle = 0.01;
-
+        double angleInDegrees = 0;
+        
         public SpiralBulletMovementPattern() : base()
         {
 
         }
 
-        public override void Move(ref double x, ref double y, GameTime gameTime, ref double movementSpeed)
+        public override void Move(ref float x, ref float y, GameTime gameTime, ref double movementSpeed)
         {
-            x = x + Math.Cos(angle) * radius;
-            y = y + Math.Sin(angle) * radius;
+            x += (float)(Math.Cos(angleInDegrees * (Math.PI / 180.0)) * radius);
+            y += (float)(Math.Sin(angleInDegrees * (Math.PI / 180.0)) * radius);
 
-            double angleInRad = Math.PI * angle / 180.0;
-
-            radius += radialIncrease;
-
-            angle += 0.1;
+            if (angleInDegrees < 90)
+            {
+                angleInDegrees += 10;
+            }
         }
     }
 }

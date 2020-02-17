@@ -1,11 +1,14 @@
 ﻿using BulletHell.Engine;
 using BulletHell.Engine.BulletFactory;
+using BulletHell.Engine.Entities.Enemies;
+using BulletHell.Engine.Entities.Enemies.EnemyFactories;
 using BulletHell.Engine.MovementPatterns;
+using BulletHell.Engine.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BulletHell
 {
@@ -17,31 +20,38 @@ namespace BulletHell
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        // Sprits
-        Texture2D crosshairSprite;
-        Texture2D backgroundSprite;
-        Texture2D playerSprite;
-        Texture2D enemySprite;
-        Texture2D bulletSprite;
+        // Textures
+        Texture2D backgroundTexture;
+        Texture2D midBossTexture;
+        Texture2D bossTexture;
+        Texture2D enemyAttackTexture;
+        Texture2D playerTexture;
+        Texture2D enemyTexture;
+        Texture2D bulletTexture;
+        Texture2D gruntTexture;
 
+        // Sprites
+        Sprite backgroundSprite;
+        
         // Fonts
         SpriteFont gameFont;
 
         // Player
         PlayerEntity player;
 
-        // Enemy
-        EnemyEntity enemy;
-
-        // Control Variables (Mouse, Keyboard, etc)
-        MouseState mouseState;
-        bool isReleased = true;
-
-        KeyboardState state;
+        // Bosses
+        MidBossEntity midBoss;
+        BossEntity boss;
 
         // Game Variables
         BulletFactory bulletFactory;
+        PlayerBulletFactory playerBulletFactory;
+        BasicEnemyFactory basicEnemyFactory;
+        GruntTwoFactory gruntTwoFactory;
+
         List<BulletEntity> bulletList;
+        List<EnemyEntity> enemyList;
+        List<GruntTwo> gruntTwoList;
        // Vector2 targetPosition;
         int score = 0;
 
@@ -49,7 +59,9 @@ namespace BulletHell
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            graphics.IsFullScreen = true;
+            //graphics.IsFullScreen = true;
+            this.graphics.PreferredBackBufferWidth = 900;
+            this.graphics.PreferredBackBufferHeight = 1000;
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
         }
 
@@ -63,17 +75,54 @@ namespace BulletHell
         {
             // TODO: Add your initialization logic here
             base.Initialize();
-            bulletList = new List<BulletEntity>();
-            bulletFactory = new BulletFactory(bulletSprite, bulletList);
-            player = new PlayerEntity(playerSprite, 50, 50, 1);
-            
-            player.bulletCreated += bulletFactory.OnBulletCreated;
-            
-            double enemyX = 200;
-            double enemyY = 100;
+
+            backgroundSprite = new Sprite(backgroundTexture, 0, 0, Color.White, 1.5f);
+            float enemyScalar = 0.15f;
+            float enemyX = 200;
+            float enemyY = 100;
             AbstractMovementPattern[] enemyMovements = { new CircleMovementPattern(enemyX, enemyY), new StraightMovementPattern()};
-            enemy = new EnemyEntity(enemySprite, 200, 100, 1, enemyMovements);
-            enemy.bulletCreated += bulletFactory.OnBulletCreated;
+            
+            bulletList = new List<BulletEntity>();
+            gruntTwoList = new List<GruntTwo>();
+
+            bulletFactory = new BulletFactory(enemyAttackTexture, bulletList);
+            playerBulletFactory = new PlayerBulletFactory(bulletTexture, bulletList);
+            basicEnemyFactory = new BasicEnemyFactory(enemyTexture, enemyScalar, 2, enemyMovements);
+            gruntTwoFactory = new GruntTwoFactory(gruntTexture, enemyScalar, 3, enemyMovements);
+
+            enemyList = new List<EnemyEntity>();
+
+            float playerScalar = 0.15f;
+            float playerX = 200;
+            float playerY = 1000;
+
+
+            player = new PlayerEntity(playerTexture, playerX, playerY, 6, playerScalar);
+            player.bulletCreated += playerBulletFactory.OnBulletCreated;
+
+            midBoss = new MidBossEntity(midBossTexture, 450, 100, 4, enemyMovements, 0.5f);
+            midBoss.bulletCreated += bulletFactory.OnBulletCreated;
+
+            boss = new BossEntity(bossTexture, 450, 100, 4, enemyMovements, 0.5f);
+            boss.bulletCreated += bulletFactory.OnBulletCreated;
+
+
+            Random rand = new Random();
+
+            for (int i = 0; i < 10; i++)
+            {
+                EnemyEntity temp = basicEnemyFactory.Create(enemyX + (i * rand.Next(20, 100)), enemyY + (i * rand.Next(20, 100)));
+                temp.bulletCreated += bulletFactory.OnBulletCreated;
+                enemyList.Add(temp);
+            }
+
+            for (int i = 0; i < 15; i++)
+            {
+                GruntTwo temp = gruntTwoFactory.Create(enemyX + (i * rand.Next(20, 100)), enemyY + (i * rand.Next(20, 100)));
+                temp.bulletCreated += bulletFactory.OnBulletCreated;
+                gruntTwoList.Add(temp);
+            }
+
         }
 
         /// <summary>
@@ -84,10 +133,14 @@ namespace BulletHell
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            playerSprite = Content.Load<Texture2D>(@"2D_Assets\playerSprite");
-            enemySprite = Content.Load<Texture2D>(@"2D_Assets\peach");
-            backgroundSprite = Content.Load<Texture2D>(@"2D_Assets\synthwaveLevel");
-            bulletSprite = Content.Load<Texture2D>(@"2D_Assets\fireball");
+            playerTexture = Content.Load<Texture2D>(@"2D_Assets\playerSprite");
+            enemyTexture = Content.Load<Texture2D>(@"2D_Assets\peach");
+            midBossTexture = Content.Load<Texture2D>(@"2D_Assets\peach_grunt2");
+            enemyAttackTexture = Content.Load<Texture2D>(@"2D_Assets\boss_attack_texture");
+            bossTexture = Content.Load<Texture2D>(@"2D_Assets\boss_Texture");
+            backgroundTexture = Content.Load<Texture2D>(@"2D_Assets\synthwaveLevel");
+            bulletTexture = Content.Load<Texture2D>(@"2D_Assets\fireball");
+            gruntTexture = Content.Load<Texture2D>(@"2D_Assets\kris");
             gameFont = Content.Load<SpriteFont>(@"Fonts\galleryFont");
             // TODO: use this.Content to load your game content here
         }
@@ -112,34 +165,36 @@ namespace BulletHell
                 Exit();
 
           //  bulletFactory.RecycleBullets(); // Culls all of the bullets that are no longer on the screen
-            
-            // Print to debug console currently pressed keys
-            System.Text.StringBuilder sb = new StringBuilder();
-            foreach (var key in state.GetPressedKeys())
-                sb.Append("Key: ").Append(key).Append(" pressed ");
-
-            if (sb.Length > 0)
-                System.Diagnostics.Debug.WriteLine(sb.ToString());
-            else
-                System.Diagnostics.Debug.WriteLine("No Keys pressed");
-
+ 
             foreach (var bullet in bulletList)
             {
                 bullet.Update(gameTime);
             }
-
-
+            
             player.Update(gameTime);
 
+
             // TODO: Add your update logic here
-            enemy.Update(gameTime);
+             midBoss.Update(gameTime);
+
+            boss.Update(gameTime);
+
+            foreach (var enemy in enemyList)
+            {
+                enemy.Update(gameTime);
+            }
+
+            foreach(var grunt in gruntTwoList)
+            {
+                grunt.Update(gameTime);
+            }
 
             foreach (var bullet in bulletList)
             {
-                if (enemy.Intersects(bullet.Hitbox))
-                {
-                    System.Console.WriteLine("ENEMY WAS HITTTTTTTT!!!!!!!!!!!!!!!!!");
-                }
+                //if (enemy.Intersects(bullet.Hitbox))
+                //{
+                //    System.Console.WriteLine("ENEMY WAS HITTTTTTTT!!!!!!!!!!!!!!!!!");
+                //}
             }
 
             base.Update(gameTime);
@@ -154,20 +209,32 @@ namespace BulletHell
             GraphicsDevice.Clear(Color.White);
 
             // TODO: Add your drawing code here
-            
             spriteBatch.Begin();
 
-            spriteBatch.Draw(backgroundSprite, new Rectangle(0, 0, 700, 700), Color.White);
+            backgroundSprite.Draw(spriteBatch);
 
             foreach (var bullet in bulletList)
             {
                 bullet.Draw(spriteBatch);
             }
 
-            player.Draw(spriteBatch);
-            enemy.Draw(spriteBatch);
+            foreach (var enemy in enemyList)
+            {
+                enemy.Draw(spriteBatch);
+            }
 
-            spriteBatch.DrawString(gameFont, score.ToString(), new Vector2(10, 10), Color.Black);
+            foreach(var grunt in gruntTwoList)
+            {
+                grunt.Draw(spriteBatch);
+            }
+
+            player.Draw(spriteBatch);
+
+            midBoss.Draw(spriteBatch);
+
+            boss.Draw(spriteBatch);
+
+            spriteBatch.DrawString(gameFont, gameTime.TotalGameTime.Seconds.ToString(), new Vector2(10, 900), Color.Black);
 
             spriteBatch.End();
             base.Draw(gameTime);

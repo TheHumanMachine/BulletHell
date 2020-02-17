@@ -11,7 +11,7 @@ namespace BulletHell.Engine.MovementPatterns
 
         }
 
-        public override void Move(ref double x, ref double y, GameTime gameTime, ref double movementSpeed)
+        public override void Move(ref float x, ref float y, GameTime gameTime, ref double movementSpeed)
         {
             Random rnd = new Random();
             double x_speed = movementSpeed;
@@ -26,7 +26,7 @@ namespace BulletHell.Engine.MovementPatterns
             }
             
             float timeDelta = gameTime.ElapsedGameTime.Milliseconds;
-            x += movementSpeed * timeDelta * 0.2;
+            x += (float)(movementSpeed * timeDelta * 0.2);
         }
     }
 }

@@ -41,16 +41,26 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Engine\Entities\Bullets\BulletFactory\PlayerBulletFactory.cs" />
     <Compile Include="Engine\Entities\BaseEntity.cs" />
-    <Compile Include="Engine\Bullets\BulletEntity.cs" />
-    <Compile Include="Engine\BulletFactory\BulletFactory.cs" />
+    <Compile Include="Engine\Entities\Bullets\BulletEntity.cs" />
+    <Compile Include="Engine\Entities\Bullets\BulletFactory\BulletFactory.cs" />
+    <Compile Include="Engine\Entities\Enemies\BossEntity.cs" />
     <Compile Include="Engine\Entities\Enemies\EnemyEntity.cs" />
+    <Compile Include="Engine\Entities\Enemies\EnemyFactories\BasicEnemyFactory.cs" />
+    <Compile Include="Engine\Entities\Enemies\EnemyFactories\GruntTwoFactory.cs" />
+    <Compile Include="Engine\Entities\Enemies\GruntTwo.cs" />
+    <Compile Include="Engine\Entities\Enemies\MidBossEntity.cs" />
+    <Compile Include="Engine\Entities\Interfaces\IsKillable.cs" />
     <Compile Include="Engine\MovementPatterns\AbstractMovementPattern.cs" />
+    <Compile Include="Engine\MovementPatterns\Bullet\PlayerBulletMovementPattern.cs" />
     <Compile Include="Engine\MovementPatterns\Bullet\SpiralBulletMovementPattern.cs" />
     <Compile Include="Engine\MovementPatterns\Enemy\CircleMovementPattern.cs" />
+    <Compile Include="Engine\MovementPatterns\Enemy\ExitScreenMovementPattern.cs" />
     <Compile Include="Engine\MovementPatterns\Enemy\StraightMovementPattern.cs" />
     <Compile Include="Engine\Entities\Player.cs" />
     <Compile Include="Engine\Utils\Circle.cs" />
+    <Compile Include="Engine\Utils\Sprite.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -80,11 +90,15 @@
     <Content Include="Content\Fonts\galleryFont.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Content\2D_Assets\boss_attack_texture.xnb" />
+    <None Include="Content\2D_Assets\boss_texture.xnb" />
     <None Include="Content\2D_Assets\bullet.xnb" />
     <None Include="Content\2D_Assets\eggplant.xnb" />
     <None Include="Content\2D_Assets\enemySprite.xnb" />
     <None Include="Content\2D_Assets\fireball.xnb" />
+    <None Include="Content\2D_Assets\kris.xnb" />
     <None Include="Content\2D_Assets\peach.xnb" />
+    <None Include="Content\2D_Assets\peach_grunt2.xnb" />
     <None Include="Content\2D_Assets\playerSprite.xnb" />
     <None Include="Content\2D_Assets\synthwaveLevel.xnb" />
   </ItemGroup>

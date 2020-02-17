@@ -11,19 +11,19 @@ namespace BulletHell.Engine.MovementPatterns
     {
         private double radius = 10;
         private double angle = 0.1;
-        private double originX = 200;
-        private double originY = 100;
+        private float originX = 200;
+        private float originY = 100;
 
-        public CircleMovementPattern(double originX, double originY)
+        public CircleMovementPattern(float originX, float originY)
         {
             this.originX = originX;
             this.originY = originY;
         }
 
-        public override void Move(ref double x, ref double y, GameTime gameTime, ref double movementSpeed)
+        public override void Move(ref float x, ref float y, GameTime gameTime, ref double movementSpeed)
         {
-            x = x +  Math.Cos(angle) * radius;
-            y = y + Math.Sin(angle) * radius;
+            x += (float)(Math.Cos(angle) * radius);
+            y += (float)(Math.Sin(angle) * radius);
 
             double angleInRad = Math.PI * angle / 180.0;
 
